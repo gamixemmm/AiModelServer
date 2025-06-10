@@ -1,0 +1,28 @@
+SAP Technical Stack
+
+Programming Languages and Development:
+1. ABAP (Advanced Business Application Programming)
+   - SAP's proprietary programming language
+   - Used for customizing and extending SAP functionality
+   - Supports both procedural and object-oriented programming
+
+2. SAP HANA
+   - In-memory database platform
+   - Provides real-time analytics
+   - Supports both SQL and MDX queries
+
+3. SAP NetWeaver
+   - Technical foundation for SAP applications
+   - Application server for ABAP and Java
+   - Integration platform
+
+4. SAP Fiori
+   - Modern user interface technology
+   - Responsive design for multiple devices
+   - Role-based access and personalization
+
+Development Tools:
+- ABAP Development Tools (ADT)
+- SAP Web IDE
+- SAP Business Application Studio
+- SAP HANA Studio 

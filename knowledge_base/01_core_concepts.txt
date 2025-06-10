@@ -1,0 +1,19 @@
+SAP Core Concepts
+
+SAP (Systems, Applications, and Products in Data Processing) is an enterprise resource planning (ERP) software that integrates various business processes in real-time.
+
+Key Features:
+- Real-time data processing
+- Integrated business processes
+- Modular architecture
+- Client-server model
+
+Main Modules:
+1. FI (Financial Accounting)
+2. CO (Controlling)
+3. MM (Materials Management)
+4. SD (Sales and Distribution)
+5. PP (Production Planning)
+6. HR (Human Resources)
+
+Each module is designed to handle specific business functions while maintaining seamless integration with other modules. This integration ensures data consistency and real-time updates across the organization. 
