@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import List, Optional
 import uvicorn
 from main import initialize_model, generate_response, load_knowledge_base
 import re
@@ -27,63 +28,42 @@ def is_greeting(message: str) -> bool:
     return bool(re.search(greetings, message.lower()))
 
 # Initialize model and knowledge base at startup
-print("Loading model and knowledge base...")
-model, tokenizer = initialize_model()
+print("Initializing model and knowledge base...")
 knowledge_base = load_knowledge_base()
+model, tokenizer = initialize_model()
+print("Initialization complete!")
 
 # Store conversation histories for different sessions
 conversation_histories = {}
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: str
+    conversation_history: Optional[List[tuple]] = []
 
 class ChatResponse(BaseModel):
     response: str
-    session_id: str
+
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "SAP AI Assistant API is running"}
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
-        # Get or create conversation history for this session
-        if request.session_id not in conversation_histories:
-            conversation_histories[request.session_id] = []
-        
-        # Get conversation history
-        conversation_history = conversation_histories[request.session_id]
-        
-        # Check if this is a greeting
-        if is_greeting(request.message):
-            # Add special instruction for greeting
-            user_input = f"{request.message} [This is a greeting, respond warmly and introduce yourself as an SAP AI Assistant]"
-        else:
-            user_input = request.message
-        
-        # Generate response
         response = generate_response(
             model=model,
             tokenizer=tokenizer,
-            user_input=user_input,
+            user_input=request.message,
             knowledge_base=knowledge_base,
-            conversation_history=conversation_history
+            conversation_history=request.conversation_history
         )
-        
-        # Update conversation history
-        conversation_history.append((request.message, response))
-        if len(conversation_history) > 5:
-            conversation_history.pop(0)
-        
-        return ChatResponse(
-            response=response,
-            session_id=request.session_id
-        )
-    
+        return ChatResponse(response=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "model_loaded": model is not None}
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=False) 
